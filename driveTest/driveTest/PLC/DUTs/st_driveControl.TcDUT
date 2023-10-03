@@ -6,6 +6,7 @@ STRUCT
 	
 	xForward		: BOOL;
 	xReverse		: BOOL;
+	actualposition  : REAL;
 
 END_STRUCT
 END_TYPE

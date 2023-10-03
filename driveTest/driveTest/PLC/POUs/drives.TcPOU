@@ -13,25 +13,39 @@ VAR
 	MC_Power_aLargeDrive		: MC_Power;
 	MC_JOG_aLargeDrive			: MC_Jog;
 	
+	Read_Actual_position		: MC_ReadActualPosition;
+	ActualPositionArray 				: ARRAY [1..1000000] OF REAL;
+	Reset_largeDrive			: MC_Reset;
+	Reset_smallDrive			: MC_Reset;
+	
+	Index 						: INT:=1;
+	Position					: REAL;
+
+	
+	
+	TIMER: TON;
+	FILEWRITE: FB_FileWrite;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[//conditional statement for switching the RGB, Red for Emergency Stop , Green for motor 1 and Orange for motor2
 IF NOT cabinet.emergencysw THEN
+	Reset_largeDrive.Execute 			:= FALSE;
+	Reset_smallDrive.Execute			:= FALSE;
     cabinet.redlight    				:= TRUE;
     cabinet.greenlight  				:= FALSE;
     cabinet.orangelight 				:= FALSE;
 ELSIF cabinet.emergencysw AND cabinet.selector1 THEN
+	Reset_smallDrive.Execute			:= TRUE;
     cabinet.redlight    				:= FALSE;
     cabinet.greenlight  				:= TRUE;
     cabinet.orangelight 				:= FALSE;   
 ELSIF cabinet.emergencysw AND cabinet.selector2 THEN 
+	Reset_largeDrive.Execute			:= TRUE;
     cabinet.redlight   					:= FALSE;
     cabinet.greenlight  				:= FALSE;
     cabinet.orangelight 				:= TRUE; 
 END_IF
-
-
 
 //Emergency switch to stop the motors
 IF cabinet.emergencysw THEN
@@ -45,12 +59,44 @@ END_IF
 
 //Selector conditonal statement
 IF cabinet.selector1 THEN
+	
 	driveController.smallDrive.xForward := cabinet.motor1fwd;
 	driveController.smallDrive.xReverse := cabinet.motor1rev;
 ELSE
 	driveController.largeDrive.xForward := cabinet.motor2fwd;
 	driveController.largeDrive.xReverse := cabinet.motor2rev;	
 END_IF
+
+//FB to read the positon of the large servo motor
+Read_Actual_position(
+	Axis								:= alargeDrive, 
+	Enable								:= TRUE , 
+	Valid=> , 
+	Busy=> , 
+	Error=> , 
+	ErrorID=> , 
+	Position							 => driveController.largeDrive.actualposition);
+	
+	
+	
+//Fb to reset the large servo motor
+Reset_largeDrive(
+	Axis								:= alargeDrive, 
+	Execute								:=  , 
+	Done=> , 
+	Busy=> , 
+	Error=> , 
+	ErrorID=> );
+
+//FB to reset the small servo motor
+Reset_smallDrive(
+	Axis								:=aSmallDrive , 
+	Execute								:= , 
+	Done=> , 
+	Busy=> , 
+	Error=> , 
+	ErrorID=> );
+
 
 //small motor power and jog
 MC_Power_aSmallDrive(
@@ -117,14 +163,47 @@ MC_Power_aLargeDrive(
 		CommandAborted					=> , 
 		Error							=> , 
 		ErrorID							=> );
+
+TIMER(IN:= , PT:= T#5S , Q=> , ET=>  );		
+IF driveController.largeDrive.xForward OR driveController.largeDrive.xReverse THEN
+	TIMER(IN := TRUE);
+END_IF
+
+IF TIMER.Q THEN
+    Position := driveController.largeDrive.actualposition;
+    ActualPositionArray[Index] := Position;
+    Index := Index + 1;
+	Timer(IN := FALSE);
 	
-]]></ST>
+	
+	IF Index > 100000 THEN
+        Timer(IN := FALSE);  (* Stop the timer when 100 values are stored *)
+    END_IF
+	
+END_IF
+
+FILEWRITE(
+	sNetId:= , 
+	hFile:= , 
+	pWriteBuff:= , 
+	cbWriteLen:= , 
+	bExecute:= , 
+	tTimeout:= , 
+	bBusy=> , 
+	bError=> , 
+	nErrId=> , 
+	cbWrite=> );	]]></ST>
     </Implementation>
     <LineIds Name="drives">
       <LineId Id="264" Count="0" />
-      <LineId Id="281" Count="12" />
-      <LineId Id="268" Count="0" />
-      <LineId Id="266" Count="0" />
+      <LineId Id="281" Count="0" />
+      <LineId Id="380" Count="0" />
+      <LineId Id="397" Count="0" />
+      <LineId Id="282" Count="3" />
+      <LineId Id="398" Count="0" />
+      <LineId Id="286" Count="3" />
+      <LineId Id="379" Count="0" />
+      <LineId Id="290" Count="3" />
       <LineId Id="218" Count="1" />
       <LineId Id="201" Count="2" />
       <LineId Id="205" Count="2" />
@@ -132,9 +211,23 @@ MC_Power_aLargeDrive(
       <LineId Id="260" Count="0" />
       <LineId Id="217" Count="0" />
       <LineId Id="215" Count="0" />
-      <LineId Id="208" Count="5" />
+      <LineId Id="208" Count="0" />
+      <LineId Id="375" Count="0" />
+      <LineId Id="209" Count="4" />
       <LineId Id="204" Count="0" />
+      <LineId Id="359" Count="0" />
+      <LineId Id="323" Count="0" />
+      <LineId Id="334" Count="6" />
+      <LineId Id="324" Count="0" />
+      <LineId Id="376" Count="0" />
+      <LineId Id="365" Count="1" />
       <LineId Id="221" Count="0" />
+      <LineId Id="368" Count="5" />
+      <LineId Id="361" Count="2" />
+      <LineId Id="389" Count="5" />
+      <LineId Id="381" Count="0" />
+      <LineId Id="364" Count="0" />
+      <LineId Id="360" Count="0" />
       <LineId Id="220" Count="0" />
       <LineId Id="156" Count="28" />
       <LineId Id="25" Count="0" />
@@ -148,7 +241,22 @@ MC_Power_aLargeDrive(
       <LineId Id="84" Count="0" />
       <LineId Id="99" Count="13" />
       <LineId Id="82" Count="0" />
-      <LineId Id="114" Count="1" />
+      <LineId Id="453" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="454" Count="0" />
+      <LineId Id="460" Count="0" />
+      <LineId Id="457" Count="0" />
+      <LineId Id="422" Count="4" />
+      <LineId Id="468" Count="0" />
+      <LineId Id="467" Count="0" />
+      <LineId Id="465" Count="0" />
+      <LineId Id="463" Count="1" />
+      <LineId Id="452" Count="0" />
+      <LineId Id="466" Count="0" />
+      <LineId Id="421" Count="0" />
+      <LineId Id="462" Count="0" />
+      <LineId Id="470" Count="9" />
+      <LineId Id="461" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
