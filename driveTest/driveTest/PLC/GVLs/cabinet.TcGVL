@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="cabinet" Id="{72a865da-4d36-467f-9703-2ff52b8f890c}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	//INPUT 
+	motor1fwd		AT %I*	: BOOL;
+	motor1rev 		AT %I*	: BOOL;
+	motor2fwd		AT %I*	: BOOL;
+	motor2rev 		AT %I*	: BOOL;
+	selector2		AT %I*	: BOOL;
+	selector1       AT %I*  : BOOL;
+	emergencysw		AT %I* 	: BOOL;
+	
+	//OUTPUT
+	orangelight 	AT %Q*	: BOOL;
+	greenlight		AT %Q*  : BOOL;
+	redlight		AT %Q*  :BOOL;
+	
+
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="driveController" Id="{6b4cc5e8-38c3-44d4-bd1d-1f935e83d17c}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	
+	smallDrive		: st_driveControl;
+    largeDrive      : st_driveControl;
+	
+	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

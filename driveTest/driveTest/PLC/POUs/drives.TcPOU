@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="drives" Id="{dede6169-9d00-441b-82ba-083c9992ede6}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM drives
+VAR
+	//Small Drive
+	aSmallDrive					: AXIS_REF; //initilization of asmallDrive axis
+	MC_Power_aSmallDrive		: MC_Power; // linking to the FB
+	MC_JOG_aSmallDrive			: MC_Jog;   //linking to the FB
+	
+	//LargeDrive
+	alargeDrive					: AXIS_REF;	
+	MC_Power_aLargeDrive		: MC_Power;
+	MC_JOG_aLargeDrive			: MC_Jog;
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//conditional statement for switching the RGB, Red for Emergency Stop , Green for motor 1 and Orange for motor2
+IF NOT cabinet.emergencysw THEN
+    cabinet.redlight    				:= TRUE;
+    cabinet.greenlight  				:= FALSE;
+    cabinet.orangelight 				:= FALSE;
+ELSIF cabinet.emergencysw AND cabinet.selector1 THEN
+    cabinet.redlight    				:= FALSE;
+    cabinet.greenlight  				:= TRUE;
+    cabinet.orangelight 				:= FALSE;   
+ELSIF cabinet.emergencysw AND cabinet.selector2 THEN 
+    cabinet.redlight   					:= FALSE;
+    cabinet.greenlight  				:= FALSE;
+    cabinet.orangelight 				:= TRUE; 
+END_IF
+
+
+
+//Emergency switch to stop the motors
+IF cabinet.emergencysw THEN
+    drives.MC_Power_aSmallDrive.Enable := TRUE;
+	drives.MC_Power_aLargeDrive.Enable := TRUE;
+ELSE	
+	drives.MC_Power_aSmallDrive.Enable := FALSE;
+	drives.MC_Power_aLargeDrive.Enable := FALSE;
+END_IF
+
+
+//Selector conditonal statement
+IF cabinet.selector1 THEN
+	driveController.smallDrive.xForward := cabinet.motor1fwd;
+	driveController.smallDrive.xReverse := cabinet.motor1rev;
+ELSE
+	driveController.largeDrive.xForward := cabinet.motor2fwd;
+	driveController.largeDrive.xReverse := cabinet.motor2rev;	
+END_IF
+
+//small motor power and jog
+MC_Power_aSmallDrive(
+		Axis							:= aSmallDrive, 
+		Enable							:= , 
+		Enable_Positive					:= TRUE, 
+		Enable_Negative					:= TRUE, 
+		Override						:= 100, 
+		BufferMode						:= , 
+		Options							:= , 
+		Status							=> , 
+		Busy							=> , 
+		Active							=> , 
+		Error							=> , 
+		ErrorID							=> );
+	
+MC_JOG_aSmallDrive(
+		Axis							:= aSmallDrive, 
+		JogForward						:= driveController.smallDrive.xForward, 
+		JogBackwards					:= driveController.smallDrive.xReverse, 
+		Mode							:= E_JogMode.MC_JOGMODE_CONTINOUS,
+		//Position:= , 
+		Velocity						:= 500, 
+		Acceleration					:= 15000, 
+		Deceleration					:= 15000, 
+		Jerk							:= 15000, 
+		Done							=> , 
+		Busy							=> , 
+		Active							=> , 
+		CommandAborted					=> , 
+		Error							=> , 
+		ErrorID							=> );
+	
+
+
+//large drive Power and jog
+MC_Power_aLargeDrive(
+		Axis							:=alargeDrive , 
+		Enable							:= , 
+		Enable_Positive					:=TRUE , 
+		Enable_Negative					:=TRUE , 
+		Override						:=100 , 
+		BufferMode						:= , 
+		Options							:= , 
+		Status							=> , 
+		Busy							=> , 
+		Active							=> , 
+		Error							=> , 
+		ErrorID							=> );
+		
+	MC_JOG_aLargeDrive(
+		Axis							:= alargeDrive, 
+		JogForward						:= driveController.largeDrive.xForward, 
+		JogBackwards					:= driveController.largeDrive.xReverse, 
+		Mode							:= E_JogMode.MC_JOGMODE_CONTINOUS,
+		//Position:= , 
+		Velocity						:= 100, 
+		Acceleration					:= 1000, 
+		Deceleration					:= 1000, 
+		Jerk							:= 1000, 
+		Done							=> , 
+		Busy							=> , 
+		Active							=> , 
+		CommandAborted					=> , 
+		Error							=> , 
+		ErrorID							=> );
+	
+]]></ST>
+    </Implementation>
+    <LineIds Name="drives">
+      <LineId Id="264" Count="0" />
+      <LineId Id="281" Count="12" />
+      <LineId Id="268" Count="0" />
+      <LineId Id="266" Count="0" />
+      <LineId Id="218" Count="1" />
+      <LineId Id="201" Count="2" />
+      <LineId Id="205" Count="2" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="260" Count="0" />
+      <LineId Id="217" Count="0" />
+      <LineId Id="215" Count="0" />
+      <LineId Id="208" Count="5" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="221" Count="0" />
+      <LineId Id="220" Count="0" />
+      <LineId Id="156" Count="28" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="69" Count="11" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="99" Count="13" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="114" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
