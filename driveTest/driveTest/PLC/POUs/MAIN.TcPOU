@@ -4,15 +4,21 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 
+	bChangeSeparatorToComma: BOOL := FALSE;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[drives();
+      <ST><![CDATA[IF bChangeSeparatorToComma THEN
+	DEFAULT_CSV_FIELD_SEP := 16#2C;(* Comma ASCII code *)
+ELSE
+	DEFAULT_CSV_FIELD_SEP := 16#3B;(* Semicolon ASCII code *)
+END_IF
 P_TextModeWrite();
 
-
-]]></ST>
+drives();
+//F();]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
+      <LineId Id="34" Count="3" />
       <LineId Id="2" Count="0" />
       <LineId Id="30" Count="0" />
       <LineId Id="26" Count="0" />

@@ -14,17 +14,18 @@ VAR
 	MC_JOG_aLargeDrive			: MC_Jog;
 	
 	Read_Actual_position		: MC_ReadActualPosition;
-	ActualPositionArray 				: ARRAY [1..1000000] OF REAL;
+	ActualPositionArrayLargeDrive 		: ARRAY [1..10] OF REAL;
+	ActualPositionArraysmallDrive 		: ARRAY [1..10] OF REAL;
 	Reset_largeDrive			: MC_Reset;
 	Reset_smallDrive			: MC_Reset;
 	
-	Index 						: INT:=1;
-	Position					: REAL;
-
+	Index 						: INT:=1; //Index of an array
+	PositionlargeDrive					: REAL;	  //positoin variable initialisation
+	PositionSmallDrive			:REAL;
+    TIMER						: TON;    //FB link of TON
 	
 	
-	TIMER: TON;
-	FILEWRITE: FB_FileWrite;
+	
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -164,35 +165,30 @@ MC_Power_aLargeDrive(
 		Error							=> , 
 		ErrorID							=> );
 
-TIMER(IN:= , PT:= T#5S , Q=> , ET=>  );		
-IF driveController.largeDrive.xForward OR driveController.largeDrive.xReverse THEN
+		
+//Timed storing of actual posiotn of Large servo motor
+
+TIMER(IN:= , PT:= T#1S , Q=> , ET=>  );		
+IF driveController.largeDrive.xForward OR driveController.largeDrive.xReverse OR driveController.smallDrive.xForward OR driveController.smallDrive.xReverse THEN
 	TIMER(IN := TRUE);
 END_IF
 
 IF TIMER.Q THEN
-    Position := driveController.largeDrive.actualposition;
-    ActualPositionArray[Index] := Position;
+    PositionlargeDrive := driveController.largeDrive.actualposition;
+	PositionSmallDrive := driveController.smallDrive.actualposition;
+    ActualPositionArrayLargeDrive[Index] := PositionlargeDrive;
+	ActualPositionArraysmallDrive[Index] := PositionSmallDrive;
+	
     Index := Index + 1;
 	Timer(IN := FALSE);
 	
 	
 	IF Index > 100000 THEN
-        Timer(IN := FALSE);  (* Stop the timer when 100 values are stored *)
+        Timer(IN := FALSE);  (* Stop the timer when 100000  values are stored *)
     END_IF
 	
 END_IF
-
-FILEWRITE(
-	sNetId:= , 
-	hFile:= , 
-	pWriteBuff:= , 
-	cbWriteLen:= , 
-	bExecute:= , 
-	tTimeout:= , 
-	bBusy=> , 
-	bError=> , 
-	nErrId=> , 
-	cbWrite=> );	]]></ST>
+	]]></ST>
     </Implementation>
     <LineIds Name="drives">
       <LineId Id="264" Count="0" />
@@ -241,12 +237,19 @@ FILEWRITE(
       <LineId Id="84" Count="0" />
       <LineId Id="99" Count="13" />
       <LineId Id="82" Count="0" />
+      <LineId Id="509" Count="0" />
       <LineId Id="453" Count="0" />
+      <LineId Id="510" Count="1" />
       <LineId Id="114" Count="0" />
       <LineId Id="454" Count="0" />
       <LineId Id="460" Count="0" />
       <LineId Id="457" Count="0" />
-      <LineId Id="422" Count="4" />
+      <LineId Id="422" Count="2" />
+      <LineId Id="517" Count="0" />
+      <LineId Id="425" Count="0" />
+      <LineId Id="514" Count="0" />
+      <LineId Id="513" Count="0" />
+      <LineId Id="426" Count="0" />
       <LineId Id="468" Count="0" />
       <LineId Id="467" Count="0" />
       <LineId Id="465" Count="0" />
@@ -254,8 +257,6 @@ FILEWRITE(
       <LineId Id="452" Count="0" />
       <LineId Id="466" Count="0" />
       <LineId Id="421" Count="0" />
-      <LineId Id="462" Count="0" />
-      <LineId Id="470" Count="9" />
       <LineId Id="461" Count="0" />
     </LineIds>
   </POU>

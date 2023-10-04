@@ -6,7 +6,7 @@ PROGRAM P_TextModeWrite
 VAR
 	bWrite			: BOOL := FALSE;(* Rising edge starts program execution *)
 	sNetId			: T_AmsNetId := '';	(* TwinCAT system network address *)
-	sFileName		: T_MaxString := 'C:\CSVDATA\TextModeGen.csv';(* CSV destination file path and name *)
+	sFileName		: T_MaxString := 'C:\CSV\TextModeGen.csv';(* CSV destination file path and name *)
 	sCSVLine		: T_MaxString := '';(* Single CSV text line (row, record), we are using string as record buffer (your are able to see created fields) *)
 	sCSVField		: T_MaxString := '';(* Single CSV field value (column, record field) *)
 	bBusy			: BOOL;
@@ -21,8 +21,8 @@ VAR
 	fbFilePuts		: FB_FilePuts;(* Writes one record (line) *)
 	fbWriter		: FB_CSVMemBufferWriter;(* Helper function block used to create CSV data bytes (single record line) *)
 
-	database		: ARRAY[0..MAX_CSV_ROWS, 0..MAX_CSV_COLUMNS ] OF STRING(MAX_CSV_FIELD_LENGTH) :=[ (* Source PLC database *)
-	'0_0', '0_1', '0_2', '0_3', '0_4', '0_5',
+	database		: ARRAY[0..GVL.MAX_CSV_ROWS, 0..GVL.MAX_CSV_COLUMNS ] OF STRING(GVL.MAX_CSV_FIELD_LENGTH) :=[ (* Source PLC database *)
+	'3_1', '0_1', '0_2', '0_3', '0_4', '0_5',
 	'1_0', '1_1', '1_2', '1_3', '1_4', '1_5',
 	'2_0', '2_1', '2_2', '2_3', '2_4', '2_5',
 	'3_0', '3_1', '3_2', '3_3', '3_4', '3_5',
@@ -63,15 +63,15 @@ END_VAR]]></Declaration>
 	3:(* Convert one PLC record to CSV format *)
 		sCSVLine := '';
 		fbWriter.eCmd := eEnumCmd_First;(* Write first field value *)
-		IF nRow <= MAX_CSV_ROWS THEN
+		IF nRow <= GVL.MAX_CSV_ROWS THEN
 
-			FOR nColumn := 0 TO MAX_CSV_COLUMNS BY 1 DO
+			FOR nColumn := 0 TO GVL.MAX_CSV_COLUMNS BY 1 DO
 
 				sCSVField := STRING_TO_CSVFIELD( database[ nRow, nColumn ], FALSE );(* TODO: Get field value from your application *)
 
 				(* Add new field to the record buffer *)
 				fbWriter( 	pBuffer := ADR( sCSVLine ), cbBuffer := SIZEOF( sCSVLine ) - 1, putValue := sCSVField, pValue := 0, cbValue := 0,
-							bCRLF := ( nColumn = MAX_CSV_COLUMNS ) );(* bCRLF == TRUE => Write CRLF after the last field value *)
+							bCRLF := ( nColumn = GVL.MAX_CSV_COLUMNS ) );(* bCRLF == TRUE => Write CRLF after the last field value *)
 				IF fbWriter.bOk THEN
 					fbWriter.eCmd := eEnumCmd_Next;(* Write next field value *)
 				ELSE(* Error *)
