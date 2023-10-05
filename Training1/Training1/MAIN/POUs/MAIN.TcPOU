@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{22e85fc1-0839-443f-ba5e-12789aeaecdd}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	COUNTER : UDINT ;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF GVL.S1 AND GVL.S2 THEN
+	GVL.LED1 := TRUE;
+	GVL.LED2 := FALSE;
+	//COUNTER := COUNTER +1 ;
+ELSIF NOT( GVL.S1 AND GVL.S2) THEN
+	GVL.LED1 := FALSE;
+	GVL.LED2 := TRUE;
+	
+	
+END_IF
+
+GVL.counter := GVL.counter +1 ;
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="7" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="35" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

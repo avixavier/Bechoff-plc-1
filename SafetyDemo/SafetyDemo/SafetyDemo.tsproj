@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.50">
+	<Project ProjectGUID="{F99D9AEE-476A-4314-987B-9D6188BE17BE}" TargetNetId="5.108.203.7.1.1" Target64Bit="true" ShowHideConfigurations="#x6">
+		<System>
+			<Tasks>
+				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
+					<Name>PlcTask</Name>
+				</Task>
+			</Tasks>
+		</System>
+		<Plc>
+			<Project GUID="{475D5823-964E-46C2-A032-50E427D30690}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+					<Name>PLC Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Contexts>
+						<Context>
+							<Id>1</Id>
+							<Name>Default</Name>
+						</Context>
+					</Contexts>
+				</Instance>
+			</Project>
+		</Plc>
+		<Safety>
+			<Project GUID="{CE5C331B-3BFE-43EE-AD43-24E6DD11E003}" Name="SafetyController" PrjFilePath="SafetyController\SafetyController.splcProj" TmcFilePath="SafetyController\SafetyController.tmc" GeneralArchiveSettings="#x000f" TargetArchiveSettings="#x0007" FileArchiveSettings="#x000e">
+				<Instance Id="#x01010010" KeepUnrestoredLinks="2">
+					<Name>SafetyController Instance</Name>
+					<TmcDesc GUID="{72A6D5B8-E98C-4604-8B90-09D1F8AB38A9}">
+						<Name>Safety</Name>
+						<InitSequence>PO</InitSequence>
+						<Contexts>
+							<Context>
+								<Id>1</Id>
+								<Name>Default</Name>
+							</Context>
+						</Contexts>
+					</TmcDesc>
+				</Instance>
+			</Project>
+		</Safety>
+		<Io>
+			<Device Id="1" DevType="111" DevFlags="#x0003" AmsPort="28673" AmsNetId="5.108.203.7.2.1" RemoteName="Device 1 (EtherCAT)" InfoImageId="2">
+				<Name>Device 1 (EtherCAT)</Name>
+				<AddressInfo>
+					<Ccat>
+						<Address>-264241152</Address>
+						<Offset>131072</Offset>
+						<Size>8192</Size>
+						<BaseAddr>0</BaseAddr>
+						<BusNo>3</BusNo>
+						<SlotNo>0</SlotNo>
+						<VendorId>5612</VendorId>
+						<DeviceId>20480</DeviceId>
+						<Dma>
+							<Address>0</Address>
+							<Offset>4096</Offset>
+							<Size>256</Size>
+							<BaseAddr>2</BaseAddr>
+							<RxChn>0</RxChn>
+							<TxChn>1</TxChn>
+						</Dma>
+						<Identification>
+							<Value>498694182</Value>
+							<Version>1</Version>
+							<Size>256</Size>
+						</Identification>
+					</Ccat>
+				</AddressInfo>
+				<Image Id="1" AddrType="9" ImageType="3">
+					<Name>Image</Name>
+				</Image>
+				<EtherCAT/>
+			</Device>
+			<Device Id="4" DevType="57" AmsPort="28676">
+				<Name>Device 4 (USB)</Name>
+				<Image Id="5" AddrType="1" ImageType="3">
+					<Name>Image</Name>
+				</Image>
+				<Usb VirtualDeviceName="true"/>
+			</Device>
+			<Device Id="5" DevType="11" AmsPort="28677">
+				<Name>Device 5 (COM Port)</Name>
+				<AddressInfo>
+					<Pnp>
+						<DeviceDesc>COM1</DeviceDesc>
+						<DeviceName>ACPI/AMDI0021/0</DeviceName>
+						<DeviceData>414d44493030323100</DeviceData>
+					</Pnp>
+				</AddressInfo>
+				<Image Id="6" AddrType="1" ImageType="1">
+					<Name>Image</Name>
+				</Image>
+				<Serial Baud="38400" Parity="1" StopBit="1" RsType="1" WaitTimeToShutdown="60" BufSize="4096" DataBit="8" ComPortNo="1" Timeout="300"/>
+			</Device>
+			<Device Id="6" DevType="121">
+				<Name>Device 6 (NOV-DP-RAM)</Name>
+				<AddressInfo>
+					<Pci>
+						<Address>-263192576</Address>
+						<Size>131072</Size>
+						<BusNo>3</BusNo>
+						<SlotNo>0</SlotNo>
+						<VendorId>5612</VendorId>
+						<DeviceId>20480</DeviceId>
+						<BaseAreaOffset>1048576</BaseAreaOffset>
+					</Pci>
+				</AddressInfo>
+				<Vars VarGrpType="1" InsertType="1">
+					<Name>Inputs</Name>
+				</Vars>
+				<Vars VarGrpType="2" InsertType="1">
+					<Name>Outputs</Name>
+				</Vars>
+				<Image Id="7" AddrType="5" ImageType="2">
+					<Name>Image</Name>
+				</Image>
+				<DpRam/>
+			</Device>
+		</Io>
+	</Project>
+</TcSmProject>
