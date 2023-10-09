@@ -28,8 +28,11 @@ COUNTONESECPULSE(ENABLE:= GVL.S3, TIMELOW:= T#500MS , TIMEHIGH:=T#500MS , OUT=> 
 	
 	fall := fall + TO_UDINT(negedge.Q);
 	
+	GVL.LED4 		:= FALSE;
+	
 	
 IF GVL.S4 THEN
+	GVL.LED4		:= TRUE;
 	edge			 := 0;
 	fall			 :=0 ;
 	counter1 		 := 0;
@@ -47,8 +50,11 @@ END_IF]]></ST>
       <LineId Id="24" Count="0" />
       <LineId Id="27" Count="3" />
       <LineId Id="34" Count="1" />
+      <LineId Id="66" Count="1" />
       <LineId Id="33" Count="0" />
-      <LineId Id="36" Count="2" />
+      <LineId Id="36" Count="1" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="38" Count="0" />
       <LineId Id="41" Count="2" />
       <LineId Id="54" Count="0" />
       <LineId Id="39" Count="0" />

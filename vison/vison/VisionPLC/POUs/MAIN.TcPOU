@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{7baf06ec-f7b0-4131-a547-bb69c3d04e8e}" SpecialFunc="None">
+    <Declaration><![CDATA[
+PROGRAM MAIN
+VAR
+	//fbfilesource                                    : FB_VN_FileSourceControl;	
+	CAMERA 											: FB_VN_FileSourceControl;	
+	raw_image										: ITcVnImage;	
+	display_raw_image								: ITcVnDisplayableImage;	
+	worked_image									: ITcVnImage;	
+	worked_raw_image								: ITcVnDisplayableImage;	
+	ipcontours										: ITcVnContainer;	
+	number_of_elements								: ULINT;	
+	hr 												: HRESULT;	
+	cState 											: ETcVnCameraState;	
+	green_color										: TcVnVector4_LREAL := [0,255,0,0];	
+	stext											: STRING;
+	
+	
+//	raw_image           :    ITcVnImage;
+ipImageInDisp       :    ITcVnDisplayableImage;
+
+ipImageRes          :    ITcVnImage;
+ipImageResDisp      :    ITcVnDisplayableImage;
+
+// QR Code
+ipCodeDecodedList   :    ITcVnContainer; 
+ipCodeContourList   :    ITcVnContainer;
+sCodeAsString       :    STRING(255);
+
+// Watchdog
+hrWD                :    HRESULT;
+tStop               :    DINT := 20000;
+tRest               :    DINT;
+
+// Output
+//sText               :    STRING;
+
+// Color
+aColorRed           :    TcVnVector4_LREAL := [255, 0, 0];
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+cState 				:= CAMERA.GetState();
+
+CASE cState OF
+	
+
+TCVN_CS_INITIAL, TCVN_CS_OPENING, TCVN_CS_OPENED, TCVN_CS_STARTACQUISITION :
+
+ 	hr  := CAMERA.StartAcquisition();  // start Camera acquisition
+
+
+
+TCVN_CS_ACQUIRING:
+	HR := CAMERA.GetCurrentImage(raw_image);   //get image from file source 
+	
+	 IF SUCCEEDED(HR) AND raw_image <> 0 THEN
+		
+
+		(*hr := F_VN_ConvertColorSpace(raw_image, worked_image, TCVN_CST_RGB_TO_GRAY, hr);
+		hr := F_VN_FindContours(worked_image, ipcontours, hr);
+		hr := F_VN_GetNumberOfElements(ipcontours,number_of_elements, hr);
+		hr := F_VN_DrawContours(ipcontours,-1,raw_image,green_color,2, hr);
+		
+		stext := ULINT_TO_STRING(number_of_elements);
+		
+		hr := F_VN_PutText(STEXT, raw_image, 70,270,TCVN_FT_HERSHEY_COMPLEX,2 , green_color, hr);
+		
+	END_IF
+
+		hr :=  F_VN_CopyIntoDisplayableImage(raw_image, display_raw_image, hr);
+		hr :=  F_VN_CopyIntoDisplayableImage(worked_image, worked_raw_image, hr);*)
+ 		
+		
+ 	QRCODE();
+ELSE
+
+    sText := ('Qrcode not read '); 
+	hr := F_VN_PutTextExp(sText, main.raw_image, 100,200, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, green_color,3, TCVN_LT_4_CONNECTED, FALSE, hr);
+	hr :=  F_VN_CopyIntoDisplayableImage(raw_image, display_raw_image,hr);
+
+END_IF
+TCVN_CS_ERROR:	
+
+	hr 	:= CAMERA.Reset();
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="288" Count="0" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="28" Count="4" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="42" Count="2" />
+      <LineId Id="48" Count="1" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="290" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="289" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="45" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="307" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="308" Count="0" />
+      <LineId Id="332" Count="0" />
+      <LineId Id="404" Count="0" />
+      <LineId Id="333" Count="0" />
+      <LineId Id="402" Count="1" />
+      <LineId Id="334" Count="0" />
+      <LineId Id="362" Count="0" />
+      <LineId Id="361" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="22" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

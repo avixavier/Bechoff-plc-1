@@ -19,7 +19,11 @@ ELSIF NOT( GVL.S1 AND GVL.S2) THEN
 END_IF
 
 GVL.counter := GVL.counter +1 ;
-]]></ST>
+
+IF GVL.counter > 10000 THEN
+	GVL.counter := 0;
+	
+END_IF]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="7" Count="0" />
@@ -32,7 +36,10 @@ GVL.counter := GVL.counter +1 ;
       <LineId Id="11" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="27" Count="0" />
+      <LineId Id="40" Count="0" />
       <LineId Id="35" Count="0" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="42" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN1" Id="{b87cb413-83c0-40ae-b8e8-1063006edf74}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN1
+VAR
+	counter1, edge, FALL     :UDINT;
+	COUNTONESECPULSE: BLINK;
+	sw1 : BOOL;
+	COUNTER2: INT;
+	posedge : R_TRIG;
+	negedge: F_TRIG;
+	SW3: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+counter1 := counter1 +1 ;
+
+
+COUNTONESECPULSE(ENABLE:= GVL.S3, TIMELOW:= T#500MS , TIMEHIGH:=T#500MS , OUT=> GVL.flasher );
+
+
+	posedge(CLK:=GVL.flasher , Q=> );
+	
+	edge := edge + TO_UDINT(posedge.Q);
+	
+	negedge(CLK:=GVL.flasher , Q=> );
+	
+	fall := fall + TO_UDINT(negedge.Q);
+	
+	GVL.LED4 		:= FALSE;
+	
+	
+IF GVL.S4 THEN
+	GVL.LED4		:= TRUE;
+	edge			 := 0;
+	fall			 :=0 ;
+	counter1 		 := 0;
+	GVL.counter      :=0;
+	GVL.flasher		 := fALSE;
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN1">
+      <LineId Id="10" Count="1" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="27" Count="3" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="36" Count="1" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="41" Count="2" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="39" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

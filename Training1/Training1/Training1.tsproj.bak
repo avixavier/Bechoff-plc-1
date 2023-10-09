@@ -2,7 +2,7 @@
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.50">
 	<DataTypes>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000001}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..0] OF BIT</Name>
+			<Name GUID="{18071995-0000-0000-0000-002000000001}" IecBaseType="true" BitType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..0] OF BIT</Name>
 			<BitSize>1</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
@@ -11,7 +11,7 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000005}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..4] OF BIT</Name>
+			<Name GUID="{18071995-0000-0000-0000-002000000005}" IecBaseType="true" BitType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..4] OF BIT</Name>
 			<BitSize>5</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
@@ -20,7 +20,7 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000004}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..3] OF BIT</Name>
+			<Name GUID="{18071995-0000-0000-0000-002000000004}" IecBaseType="true" BitType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..3] OF BIT</Name>
 			<BitSize>4</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
@@ -29,7 +29,7 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000007}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..6] OF BIT</Name>
+			<Name GUID="{18071995-0000-0000-0000-002000000007}" IecBaseType="true" BitType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..6] OF BIT</Name>
 			<BitSize>7</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
@@ -74,12 +74,21 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000002}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..1] OF BIT</Name>
+			<Name GUID="{18071995-0000-0000-0000-002000000002}" IecBaseType="true" BitType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..1] OF BIT</Name>
 			<BitSize>2</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
 				<LBound>0</LBound>
 				<Elements>2</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-00000000003D}" TcBaseType="true" HideType="true">USINTARR6</Name>
+			<BitSize>48</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>6</Elements>
 			</ArrayInfo>
 		</DataType>
 	</DataTypes>
@@ -99,7 +108,7 @@
 				<Cpu CpuId="3"/>
 			</Settings>
 			<Tasks>
-				<Task Id="3" Priority="20" CycleTime="50000" AmsPort="350" AdtTasks="true">
+				<Task Id="3" Priority="20" CycleTime="10000" AmsPort="350" AdtTasks="true">
 					<Name>PlcTask</Name>
 				</Task>
 				<Task Id="4" Priority="21" CycleTime="100000" AmsPort="351" AdtTasks="true">
@@ -109,7 +118,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{DD6C7450-0203-4BB6-A4F2-ECC874F3420C}" Name="MAIN" PrjFilePath="MAIN\MAIN.plcproj" TmcFilePath="MAIN\MAIN.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="MAIN\MAIN.tmc" TmcHash="{385AB436-ABE5-334F-5957-188B17F4F2BD}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="MAIN\MAIN.tmc" TmcHash="{9C178EA0-96D3-AA83-E124-B701148D2AA8}">
 					<Name>MAIN Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -135,10 +144,6 @@
 							<Name>GVL.LED2</Name>
 							<Type>BOOL</Type>
 						</Var>
-						<Var>
-							<Name>GVL.LED3</Name>
-							<Type>BOOL</Type>
-						</Var>
 					</Vars>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
 						<Name>PlcTask1 Inputs</Name>
@@ -150,9 +155,21 @@
 							<Name>GVL.S4</Name>
 							<Type>BOOL</Type>
 						</Var>
+						<Var>
+							<Name>GVL.POWEROK</Name>
+							<Type>BOOL</Type>
+						</Var>
 					</Vars>
 					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
 						<Name>PlcTask1 Outputs</Name>
+						<Var>
+							<Name>GVL.LED3</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>GVL.LED4</Name>
+							<Type>BOOL</Type>
+						</Var>
 						<Var>
 							<Name>GVL.flasher</Name>
 							<Type>BOOL</Type>
@@ -166,7 +183,7 @@
 								<OTCID>#x02010030</OTCID>
 							</ManualConfig>
 							<Priority>20</Priority>
-							<CycleTime>5000000</CycleTime>
+							<CycleTime>1000000</CycleTime>
 						</Context>
 						<Context>
 							<Id>1</Id>
@@ -1653,6 +1670,70 @@ Bit 8 - 15 : reserved]]></Comment>
 				</Box>
 				<EtherCAT DcSyncMode="3"/>
 			</Device>
+			<Device Id="5" Disabled="true" DevType="130" AmsNetId="192.168.1.55.6.255" RemoteName="Device 5 (EtherCAT Slave)">
+				<Name>Device 5 (EtherCAT Slave)</Name>
+				<AddressInfo>
+					<Ccat>
+						<Address>-801112064</Address>
+						<Offset>65536</Offset>
+						<Size>65536</Size>
+						<BaseAddr>0</BaseAddr>
+						<BusNo>3</BusNo>
+						<SlotNo>0</SlotNo>
+						<VendorId>5612</VendorId>
+						<DeviceId>20480</DeviceId>
+						<TimeSize>128</TimeSize>
+						<TimeOffs>1024</TimeOffs>
+						<GpioSize>32</GpioSize>
+						<GpioOffs>768</GpioOffs>
+					</Ccat>
+				</AddressInfo>
+				<Vars VarGrpType="1" InsertType="1">
+					<Name>Inputs</Name>
+				</Vars>
+				<Vars VarGrpType="2" InsertType="1">
+					<Name>Outputs</Name>
+				</Vars>
+				<Vars VarGrpType="3">
+					<Name>InfoData</Name>
+					<Var>
+						<Name>State</Name>
+						<Comment><![CDATA[0x___1 = Slave is in 'INIT' state
+0x___2 = Slave is in 'PREOP' state
+0x___4 = Slave is in 'SAFEOP' state
+0x___8 = Slave is in 'OP' state]]></Comment>
+						<Type>UINT</Type>
+						<InOut>0</InOut>
+					</Var>
+					<Var>
+						<Name>NetId</Name>
+						<Type GUID="{18071995-0000-0000-0000-00000000003D}">USINTARR6</Type>
+						<BitOffs>16</BitOffs>
+						<InOut>0</InOut>
+					</Var>
+				</Vars>
+				<Image Id="5" AddrType="1" ImageType="2">
+					<Name>Image</Name>
+				</Image>
+				<EtherCATSlave/>
+			</Device>
+			<Device Id="6" Disabled="true" DevType="11" AmsPort="28678">
+				<Name>Device 6 (COM Port)</Name>
+				<AddressInfo>
+					<Pci>
+						<Address>-793665536</Address>
+						<Size>4096</Size>
+						<BusNo>0</BusNo>
+						<SlotNo>126</SlotNo>
+						<VendorId>32902</VendorId>
+						<DeviceId>3850</DeviceId>
+					</Pci>
+				</AddressInfo>
+				<Image Id="6" AddrType="1" ImageType="1">
+					<Name>Image</Name>
+				</Image>
+				<Serial Baud="38400" Parity="1" StopBit="1" RsType="1" WaitTimeToShutdown="60" BufSize="4096" DataBit="8" Is16950="true" ComPortNo="99" Timeout="300"/>
+			</Device>
 		</Io>
 	</Project>
 	<Mappings>
@@ -1666,6 +1747,7 @@ Bit 8 - 15 : reserved]]></Comment>
 				<Link VarA="PlcTask Outputs^GVL.LED2" VarB="Channel 10^Output"/>
 				<Link VarA="PlcTask1 Inputs^GVL.S3" VarB="Channel 3^Input"/>
 				<Link VarA="PlcTask1 Inputs^GVL.S4" VarB="Channel 4^Input"/>
+				<Link VarA="PlcTask1 Outputs^GVL.LED4" VarB="Channel 12^Output"/>
 				<Link VarA="PlcTask1 Outputs^GVL.flasher" VarB="Channel 11^Output"/>
 			</OwnerB>
 		</OwnerA>

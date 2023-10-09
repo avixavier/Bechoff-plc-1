@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="QRCODE" Id="{607e06fa-0106-4868-a2e8-cb6d05e3f757}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM QRCODE
+VAR
+	hr                  :    HRESULT;
+
+raw_image           :    ITcVnImage;
+ipImageInDisp       :    ITcVnDisplayableImage;
+
+ipImageRes          :    ITcVnImage;
+ipImageResDisp      :    ITcVnDisplayableImage;
+
+// QR Code
+ipCodeDecodedList   :    ITcVnContainer; 
+ipCodeContourList   :    ITcVnContainer;
+sCodeAsString       :    STRING(255);
+
+// Watchdog
+hrWD                :    HRESULT;
+tStop               :    DINT := 20000;
+tRest               :    DINT;
+
+// Output
+sText               :    STRING;
+
+// Color
+aColorRed           :    TcVnVector4_LREAL := [255, 0, 0];
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[	hr := F_VN_ReadQRCodeExp(main.raw_image, ipCodeDecodedList, ipCodeContourList, 1, TCVN_CSS_ONLY_NOT_INVERTED + TCVN_CSS_ONLY_NOT_FLIPPED, main.hr);
+// Check if the function was executed successfully 
+
+    // Export Code into String
+	hr := F_VN_ExportSubContainer_String(ipCodeDecodedList, 0, sCodeAsString, 255, hr);
+
+    // Write Code into Result Image
+    hr := F_VN_PutTextExp(sCodeAsString,main.raw_image, 50, 100, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr);
+
+    // Draw Code Contour into Result Image
+ hr := F_VN_DrawContours(ipCodeContourList, -1, main.raw_image, aColorRed, 3, main.hr); 
+
+    // Write HRESULT into Result Image
+    sText := ('Qrcode read '); 
+	hr := F_VN_PutTextExp(sText, main.raw_image, 60,150, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr);
+	hr :=  F_VN_CopyIntoDisplayableImage(main.raw_image, main.display_raw_image,hr);]]></ST>
+    </Implementation>
+    <LineIds Name="QRCODE">
+      <LineId Id="86" Count="13" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="100" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

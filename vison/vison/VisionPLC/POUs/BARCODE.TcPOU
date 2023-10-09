@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="BARCODE" Id="{237d413a-9ee8-4397-9597-07d684171fe5}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM BARCODE
+VAR
+	hr                        :   HRESULT;
+
+ipImageIn                 :   ITcVnImage;
+ipImageInDsply            :   ITcVnDisplayableImage;
+
+ipImageRes                :   ITcVnImage;
+ipImageResDsply           :   ITcVnDisplayableImage;
+
+// Barcode
+ipCodeDecodedList         :   ITcVnContainer; 
+ipCodeContourList         :   ITcVnContainer;
+sCodeAsString             :   STRING(255);
+eBarcodeSearchDirection   :   ETcVnBarcodeSearchDirection := TCVN_BSD_ANY;
+eBarcodeType              :   ETcVnBarcodeType := TCVN_BT_EAN13;
+
+// Watchdog
+hrWD                      :   HRESULT;
+tStop                     :   DINT := 50000;
+tRest                     :   DINT;
+
+// Output
+sText                     :   STRING;
+
+// Color
+aColorRed                 :   TcVnVector4_LREAL := [255, 0, 0];
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Execute the Barcode Reading Function with EAN13 selected monitored by the Watchdog-Function 
+// ---------------------------------------------------------------
+hrWD := F_VN_StartRelWatchdog(tStop, S_OK);
+    hr := F_VN_ReadBarcodeExp(
+               ipSrcImage         :=   ipImageIn,
+               ipDecodedData      :=   ipCodeDecodedList,
+               ipContours         :=   ipCodeContourList,
+               eBarcodeType       :=   eBarcodeType,
+               nCodeNumber        :=   1, 
+               eSearchDirection   :=   eBarcodeSearchDirection,
+               hrPrev             :=   hr);
+hrWD := F_VN_StopWatchdog(hrWD, tRest => tRest);
+
+// Check if the function was executed successfully 
+IF hr = S_OK THEN
+    // Export Code into String
+    hr := F_VN_ExportSubContainer_String(ipCodeDecodedList, 0, sCodeAsString, 255, hr);
+
+    // Write Code into Result Image
+    hr := F_VN_PutTextExp(sCodeAsString, ipImageRes, 50, 100, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 5, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr);
+
+    // Draw Code Contour into Result Image
+    hr := F_VN_DrawContours(ipCodeContourList, 0, ipImageRes, aColorRed, 3, hr);
+ELSE
+    // Write HRESULT into Result Image
+    sText := CONCAT('Returncode ', DINT_TO_STRING(hr)); 
+    hr := F_VN_PutTextExp(sText, ipImageRes, 50, 100, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 5, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr); 
+END_IF
+
+// Write Code Reading proceeded time into Result Image
+sText := CONCAT(CONCAT('Time: ', DINT_TO_STRING(tStop - tRest)), 'us');
+hr := F_VN_PutTextExp(sText, ipImageRes, 50, 200, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 5, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr);]]></ST>
+    </Implementation>
+    <LineIds Name="BARCODE">
+      <LineId Id="31" Count="30" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
