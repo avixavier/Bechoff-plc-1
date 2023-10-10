@@ -1,15 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <POU Name="BARCODE" Id="{237d413a-9ee8-4397-9597-07d684171fe5}" SpecialFunc="None">
-    <Declaration><![CDATA[PROGRAM BARCODE
+  <POU Name="Barcode" Id="{6472cb5c-f242-48d2-bea7-9e863a253763}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Barcode 
 VAR
 	hr                        :   HRESULT;
 
-ipImageIn                 :   ITcVnImage;
-ipImageInDsply            :   ITcVnDisplayableImage;
-
-ipImageRes                :   ITcVnImage;
-ipImageResDsply           :   ITcVnDisplayableImage;
 
 // Barcode
 ipCodeDecodedList         :   ITcVnContainer; 
@@ -17,6 +12,8 @@ ipCodeContourList         :   ITcVnContainer;
 sCodeAsString             :   STRING(255);
 eBarcodeSearchDirection   :   ETcVnBarcodeSearchDirection := TCVN_BSD_ANY;
 eBarcodeType              :   ETcVnBarcodeType := TCVN_BT_EAN13;
+display_barcode								: ITcVnDisplayableImage;
+ipImageRes: ITcVnImage;	
 
 // Watchdog
 hrWD                      :   HRESULT;
@@ -27,46 +24,44 @@ tRest                     :   DINT;
 sText                     :   STRING;
 
 // Color
-aColorRed                 :   TcVnVector4_LREAL := [255, 0, 0];
+aColorgreen                 :   TcVnVector4_LREAL := [0, 255, 0];
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// Execute the Barcode Reading Function with EAN13 selected monitored by the Watchdog-Function 
-// ---------------------------------------------------------------
-hrWD := F_VN_StartRelWatchdog(tStop, S_OK);
-    hr := F_VN_ReadBarcodeExp(
-               ipSrcImage         :=   ipImageIn,
-               ipDecodedData      :=   ipCodeDecodedList,
-               ipContours         :=   ipCodeContourList,
-               eBarcodeType       :=   eBarcodeType,
-               nCodeNumber        :=   1, 
-               eSearchDirection   :=   eBarcodeSearchDirection,
-               hrPrev             :=   hr);
-hrWD := F_VN_StopWatchdog(hrWD, tRest => tRest);
+      <ST><![CDATA[ipImageRes := main.ipImageIn   ;
 
-// Check if the function was executed successfully 
-IF hr = S_OK THEN
-    // Export Code into String
+
+ hr := F_VN_ReadBarcodeExp(main.ipImageIn, ipCodeDecodedList, ipCodeContourList,eBarcodeType, 1,eBarcodeSearchDirection , main.hr);
+	
+IF hr = S_OK THEN	
+	    // Export Code into String
     hr := F_VN_ExportSubContainer_String(ipCodeDecodedList, 0, sCodeAsString, 255, hr);
 
     // Write Code into Result Image
-    hr := F_VN_PutTextExp(sCodeAsString, ipImageRes, 50, 100, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 5, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr);
+    hr := F_VN_PutTextExp(sCodeAsString, main.ipImageIn, 100, 100, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorgreen,3, TCVN_LT_4_CONNECTED, FALSE, hr);
 
     // Draw Code Contour into Result Image
-    hr := F_VN_DrawContours(ipCodeContourList, 0, ipImageRes, aColorRed, 3, hr);
+    hr := F_VN_DrawContours(ipCodeContourList, -1, main.ipImageIn, aColorGreen, 3, hr);
 ELSE
     // Write HRESULT into Result Image
-    sText := CONCAT('Returncode ', DINT_TO_STRING(hr)); 
-    hr := F_VN_PutTextExp(sText, ipImageRes, 50, 100, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 5, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr); 
+    sText := CONCAT('NOT A BARCODE ', DINT_TO_STRING(hr)); 
+    hr := F_VN_PutTextExp(sText, ipImageRes, 100, 100, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorgreen,3, TCVN_LT_4_CONNECTED, FALSE, hr); 
 END_IF
-
-// Write Code Reading proceeded time into Result Image
-sText := CONCAT(CONCAT('Time: ', DINT_TO_STRING(tStop - tRest)), 'us');
-hr := F_VN_PutTextExp(sText, ipImageRes, 50, 200, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 5, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr);]]></ST>
+	
+	//hr := F_VN_PutTextExp(sCodeAsString, main.raw_image, 60,240, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorblue,3, TCVN_LT_4_CONNECTED, FALSE, hr);
+	hr :=  F_VN_CopyIntoDisplayableImage(ipImageRes, display_barcode,hr);]]></ST>
     </Implementation>
-    <LineIds Name="BARCODE">
-      <LineId Id="31" Count="30" />
-      <LineId Id="5" Count="0" />
+    <LineIds Name="Barcode">
+      <LineId Id="32" Count="0" />
+      <LineId Id="82" Count="1" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="41" Count="6" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="77" Count="3" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="48" Count="2" />
     </LineIds>
   </POU>
 </TcPlcObject>

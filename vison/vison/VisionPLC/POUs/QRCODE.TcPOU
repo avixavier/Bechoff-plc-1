@@ -4,12 +4,13 @@
     <Declaration><![CDATA[PROGRAM QRCODE
 VAR
 	hr                  :    HRESULT;
-
+	hr1				: HRESULT;
 raw_image           :    ITcVnImage;
 ipImageInDisp       :    ITcVnDisplayableImage;
 
-ipImageRes          :    ITcVnImage;
+ipImageResQR          :    ITcVnImage;
 ipImageResDisp      :    ITcVnDisplayableImage;
+
 
 // QR Code
 ipCodeDecodedList   :    ITcVnContainer; 
@@ -26,12 +27,16 @@ sText               :    STRING;
 
 // Color
 aColorRed           :    TcVnVector4_LREAL := [255, 0, 0];
+aColorblue           :    TcVnVector4_LREAL := [0, 0, 255];
+
+
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[	hr := F_VN_ReadQRCodeExp(main.raw_image, ipCodeDecodedList, ipCodeContourList, 1, TCVN_CSS_ONLY_NOT_INVERTED + TCVN_CSS_ONLY_NOT_FLIPPED, main.hr);
+      <ST><![CDATA[ipImageResQR := main.raw_image;
+hr := F_VN_ReadQRCodeExp(main.raw_image, ipCodeDecodedList, ipCodeContourList, 1, TCVN_CSS_ONLY_NOT_INVERTED + TCVN_CSS_ONLY_NOT_FLIPPED, main.hr);
 // Check if the function was executed successfully 
-
+IF hr = S_OK THEN
     // Export Code into String
 	hr := F_VN_ExportSubContainer_String(ipCodeDecodedList, 0, sCodeAsString, 255, hr);
 
@@ -39,17 +44,36 @@ END_VAR
     hr := F_VN_PutTextExp(sCodeAsString,main.raw_image, 50, 100, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr);
 
     // Draw Code Contour into Result Image
- hr := F_VN_DrawContours(ipCodeContourList, -1, main.raw_image, aColorRed, 3, main.hr); 
+	 hr := F_VN_DrawContours(ipCodeContourList, -1, main.raw_image, aColorRed, 3, main.hr); 
 
     // Write HRESULT into Result Image
     sText := ('Qrcode read '); 
-	hr := F_VN_PutTextExp(sText, main.raw_image, 60,150, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr);
-	hr :=  F_VN_CopyIntoDisplayableImage(main.raw_image, main.display_raw_image,hr);]]></ST>
+	hr := F_VN_PutTextExp(sText, main.raw_image, 60,240, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorblue,3, TCVN_LT_4_CONNECTED, FALSE, hr);
+	hr :=  F_VN_CopyIntoDisplayableImage(main.raw_image, main.display_raw_image,hr);
+	
+
+	//hr1 := F_VN_PutTextExp(sText, ipImageRes, 60,240, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorblue,3, TCVN_LT_4_CONNECTED, FALSE, hr1);
+	hr :=  F_VN_CopyIntoDisplayableImage(ipImageResQR, ipImageResDisp,hr);
+ELSE
+    // Write HRESULT into Result Image
+    sText := CONCAT('QR cannot be read ', DINT_TO_STRING(hr)); 
+    hr := F_VN_PutTextExp(sText, ipImageResQR, 70, 100, ETcVnFontType.TCVN_FT_HERSHEY_PLAIN, 1, aColorRed,3, TCVN_LT_4_CONNECTED, FALSE, hr);
+	hr :=  F_VN_CopyIntoDisplayableImage(ipImageResQR, ipImageResDisp,hr);
+END_IF]]></ST>
     </Implementation>
     <LineIds Name="QRCODE">
-      <LineId Id="86" Count="13" />
+      <LineId Id="123" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="87" Count="12" />
       <LineId Id="5" Count="0" />
       <LineId Id="100" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="109" Count="3" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="108" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
