@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{77092b94-12e6-4924-8d71-f09ea13ddf14}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	// Standard TcVision State Machine Variables
+	hr						:	HRESULT;
+	
+	fbCamera				:	FB_VN_SimpleCameraControl;
+	eState					:	ETcVnCameraState;
+	
+	ipImageIn				:	ITcVnImage;
+	ipImageInDisp			:	ITcVnDisplayableImage;
+	
+	// Sample Specific Variables
+	fbWriteImage			:	FB_VN_WriteImage := (nTimeout := T#1000MS);
+	sFilePath 				:	STRING(255) := 'C:\Users\AviNoronha\Desktop\GIT1\save_image_to_afile';
+	bWriteImageTrigger		:	BOOL;
+	bWriteImageWaitResult	:	BOOL;
+	bWriteImageDone			:	BOOL;
+	nReturnCode				:   UDINT;
+	i						: INT := 1;
+	spath: STRING;
+	d: STRING;
+	spath1: STRING(255);
+	spath2: STRING(255);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[eState := fbCamera.GetState();
+
+CASE eState OF
+		
+TCVN_CS_INITIAL, TCVN_CS_INITIALIZING, TCVN_CS_INITIALIZED, TCVN_CS_OPENING, TCVN_CS_OPENED, TCVN_CS_STARTACQUISITION:
+	fbCamera.StartAcquisition();
+
+TCVN_CS_ACQUIRING:
+
+	hr := fbCamera.GetCurrentImage(ipImageIn);
+
+	IF SUCCEEDED(hr) AND ipImageIn <> 0 THEN
+
+		IF NOT fbWriteImage.bBusy AND bWriteImageTrigger THEN
+			bWriteImageTrigger := TRUE;
+			bWriteImageDone := FALSE;
+			bWriteImageWaitResult := TRUE;
+			i:= i+1;
+			d := INT_TO_STRING(i);
+			spath1 := CONCAT(sFilePath, '\');
+			spath2 := CONCAT(d,'.png');
+			spath := CONCAT(spath1,spath2);
+			
+			// With setting sFilePath:= '' to an empty string the images are saved under the default path
+			// The default path can be set at the service configuration tab of the Vision Node
+			// If sFilePath is set, it must contain either the full path, the image name and type 
+			// or a relative path with the image name and type or just the image name and type
+			// for example: sFilePath := 'C:\WriteImage\ImageName.bmp' or '..\ImageName.bmp' or 'ImageName.bmp'
+			// All file paths refer to the selected target system
+			fbWriteImage(ipImage := ipImageIn, sFilePath := spath, bWrite := TRUE);
+		END_IF
+		
+		hr := F_VN_TransformIntoDisplayableImage(ipImageIn, ipImageInDisp, hr);
+	END_IF
+
+	fbWriteImage(sFilepath:= 'spath', bWrite := FALSE);
+
+	IF bWriteImageWaitResult AND NOT fbWriteImage.bBusy THEN
+		bWriteImageWaitResult := FALSE;
+		// Check if fbWriteImage was finished successfully or implement error handling
+		IF fbWriteImage.bError THEN
+			nReturnCode := fbWriteImage.nErrorId AND 16#FFF;
+		ELSE
+			bWriteImageDone := TRUE;
+			nReturnCode := 0;
+		END_IF
+	END_IF	
+	
+TCVN_CS_ERROR:
+	fbCamera.Reset();
+
+END_CASE
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="25" Count="16" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="43" Count="28" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
