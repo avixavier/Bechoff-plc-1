@@ -13,7 +13,7 @@ VAR
 	
 	ipcontours										: ITcVnContainer;	
 	number_of_elements								: ULINT;	
-	hr 												: HRESULT;	
+	hr, hr1											: HRESULT;	
 	cState 											: ETcVnCameraState;	
 	green_color										: TcVnVector4_LREAL := [0,255,0,0];	
 	Bcolor										: TcVnVector4_LREAL := [100,0,0,0];
@@ -27,21 +27,41 @@ ipCodeDecodedList   :    ITcVnContainer;
 ipCodeContourList   :    ITcVnContainer;
 sCodeAsString       :    STRING(255);
 
-// Watchdog
-hrWD                :    HRESULT;
-tStop               :    DINT := 20000;
-tRest               :    DINT;
 
 // Output
 //sText               :    STRING;
 
 // Color
 aColorRed           :    TcVnVector4_LREAL := [255, 0, 0];
+pCodeDecodedList         :   ITcVnContainer; 
+
+
+eBarcodeSearchDirection   :   ETcVnBarcodeSearchDirection := TCVN_BSD_ANY;
+eBarcodeType              :   ETcVnBarcodeType := TCVN_BT_EAN13;
+display_barcode								: ITcVnDisplayableImage;
+ipImageRes: ITcVnImage;	
+
+
+
+
+// Color
+aColorgreen                 :   TcVnVector4_LREAL := [0, 255, 0];
+
+//pwrite variable
+bChangeSeparatorToComma	: BOOL := FALSE;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
+      <ST><![CDATA[IF bChangeSeparatorToComma THEN
+	DEFAULT_CSV_FIELD_SEP := 16#2C;(* Comma ASCII code *)
+ELSE
+	DEFAULT_CSV_FIELD_SEP := 16#3B;(* Semicolon ASCII code *)
+END_IF
 
+
+
+
+//camera code 
 cState 				:= CAMERA.GetState();
 
 CASE cState OF
@@ -58,6 +78,10 @@ TCVN_CS_ACQUIRING:
 	ipImageIn := raw_image;   //get image from file source 
 	
 	 IF SUCCEEDED(HR) AND ipImageIn <> 0 THEN
+		 
+		
+// Check if the function was executed successfully 	
+
 		
 
 		(*hr := F_VN_ConvertColorSpace(raw_image, worked_image, TCVN_CST_RGB_TO_GRAY, hr);
@@ -74,10 +98,10 @@ TCVN_CS_ACQUIRING:
 		hr :=  F_VN_CopyIntoDisplayableImage(raw_image, display_raw_image, hr); *)
 	
  		
-		
- 	//QRCODE();
-	Barcode();
-END_IF	
+	//Barcode();	
+ 	QRCODE();
+	 	END_IF
+
 TCVN_CS_ERROR:	
 
 	hr 	:= CAMERA.Reset();
@@ -86,8 +110,11 @@ END_CASE
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
+      <LineId Id="586" Count="4" />
       <LineId Id="288" Count="0" />
       <LineId Id="204" Count="0" />
+      <LineId Id="593" Count="1" />
+      <LineId Id="592" Count="0" />
       <LineId Id="2" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="19" Count="0" />
@@ -99,6 +126,10 @@ END_CASE
       <LineId Id="42" Count="0" />
       <LineId Id="407" Count="0" />
       <LineId Id="43" Count="1" />
+      <LineId Id="452" Count="0" />
+      <LineId Id="476" Count="0" />
+      <LineId Id="474" Count="0" />
+      <LineId Id="473" Count="0" />
       <LineId Id="48" Count="1" />
       <LineId Id="67" Count="0" />
       <LineId Id="73" Count="0" />
@@ -115,7 +146,7 @@ END_CASE
       <LineId Id="36" Count="0" />
       <LineId Id="308" Count="0" />
       <LineId Id="332" Count="0" />
-      <LineId Id="405" Count="0" />
+      <LineId Id="539" Count="0" />
       <LineId Id="414" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="41" Count="0" />

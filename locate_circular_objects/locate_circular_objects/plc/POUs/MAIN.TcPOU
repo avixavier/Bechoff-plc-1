@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{5b9b9712-f9ed-46bd-9f5a-314fbbca9d9a}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+hr              : HRESULT;
+hrFunc          : HRESULT;
+
+ipImageIn       : ITcVnImage;
+ipImageInDisp   : ITcVnDisplayableImage;
+ipImageRes      : ITcVnImage;
+ipImageResDisp  : ITcVnDisplayableImage;
+
+// result
+stEllipse       : TcVnRotatedRectangle;
+ipContourPoints : ITcVnContainer;
+
+// input parameters
+aCenter         : TcVnPoint2_REAL := [650, 400];
+fRadius         : REAL := 300;
+fMinRadius      : REAL := 100;
+fMinStrength    : REAL := 30;
+nSubPixIter     : UDINT := 10;
+nSearchLines    : UDINT := 40;
+eAlgorithm      : ETcVnEdgeDetectionAlgorithm := TCVN_EDA_INTERPOLATION;
+
+// Watchdog
+hrWD            : HRESULT;
+tStop           : DINT := 15000;
+tRest           : DINT;
+nFraction       : UDINT;
+
+// drawing
+aColorRed       : TcVnVector4_LREAL := [200, 0, 0];
+aColorGreen     : TcVnVector4_LREAL := [0, 175, 0];
+sText           : STRING(255);
+	aCenterPoint: INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[hrWD := F_VN_StartRelWatchdog(tStop, hr);
+   hrFunc := F_VN_LocateEllipseExp(
+             ipSrcImage               :=   ipImageIn,
+             stEllipse                :=   stEllipse,
+             aCenterPoint             :=   aCenter,
+             fSearchRadius            :=   fRadius,
+             eEdgeDirection           :=   TCVN_ED_LIGHT_TO_DARK,
+             fMinStrength             :=   fMinStrength,
+             nMaxThickness            :=   7,
+             bInvertSearchDirection   :=   TRUE,
+             fMinSearchRadius         :=   fMinRadius,
+             nSubpixelsIterations     :=   nSubpixIter,
+             nSearchLines             :=   nSearchLines,
+             fApproxPrecision         :=   0.0001,
+             eAlgorithm               :=   eAlgorithm,
+             ipContourPoints          :=   ipContourPoints,
+             hrPrev                   :=   hr);
+hrWD := F_VN_StopWatchdog(hrWD, nFractionProcessed=>nFraction, tRest=>tRest);
+
+// Draw result for visualization
+hr := F_VN_ConvertColorSpace(ipImageIn, ipImageRes, TCVN_CST_GRAY_TO_RGB, hr);
+sText := CONCAT(CONCAT('Processed ', UDINT_TO_STRING(nFraction)), '%');
+hr := F_VN_PutTextExp(sText, ipImageRes, 25, 50, TCVN_FT_HERSHEY_SIMPLEX, 1.3, aColorGreen, 2, TCVN_LT_8_CONNECTED, FALSE, hr);
+sText := CONCAT(CONCAT('Time ', DINT_TO_STRING(tStop - tRest)), 'us');
+hr := F_VN_PutTextExp(sText, ipImageRes, 25, 100, TCVN_FT_HERSHEY_SIMPLEX, 1.3, aColorGreen, 2, TCVN_LT_8_CONNECTED, FALSE,hr);
+hr := F_VN_DrawCircle(REAL_TO_UDINT(aCenter[0]), REAL_TO_UDINT(aCenter[1]), REAL_TO_UDINT(fMinRadius), ipImageRes, aColorRed, 2, hr);
+hr := F_VN_DrawCircle(REAL_TO_UDINT(aCenter[0]), REAL_TO_UDINT(aCenter[1]), REAL_TO_UDINT(fRadius), ipImageRes, aColorRed, 2, hr);
+hr := F_VN_DrawPoints(ipContourPoints, ipImageRes, TCVN_DS_X, aColorGreen, hr);
+hr := F_VN_DrawPoint(REAL_TO_UDINT(stEllipse.aCenter[0]), REAL_TO_UDINT(stEllipse.aCenter[1]), ipImageRes, TCVN_DS_PLUS, aColorGreen, hr);
+hr := F_VN_DrawEllipse(stEllipse, ipImageRes, aColorGreen, 1, hr);
+
+// Display source and result image
+hr := F_VN_TransformIntoDisplayableImage(ipImageIn, ipImageInDisp, S_OK);
+hr := F_VN_TransformIntoDisplayableImage(ipImageRes, ipImageResDisp, S_OK);]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="223" Count="32" />
+      <LineId Id="110" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

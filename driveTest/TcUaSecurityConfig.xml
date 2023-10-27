@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<TcUaSecurityConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Groups>
+    <Group Name="Guests" Access="0x0">
+      <DefaultAccess Namespace="http://opcfoundation.org/UA/" Access="0xB" />
+    </Group>
+    <Group Name="Users" MemberOf="Guests" Access="0x0">
+      <DefaultAccess Namespace="urn:BeckhoffAutomation:TcOpcUaServer" Access="0x11B" />
+      <DefaultAccess Namespace="http://opcfoundation.org/UA/DI/" Access="0x11B" />
+      <DefaultAccess Namespace="http://PLCopen.org/OpcUa/IEC61131-3/" Access="0x11B" />
+      <DefaultAccess Namespace="urn:BeckhoffAutomation:Ua:Types:GlobalTypes" Access="0x11B" />
+      <DefaultAccess Namespace="http://Beckhoff.com/TwinCAT/TF6100/Server/Configuration" Access="0xB" />
+      <DefaultAccess Namespace="urn:BeckhoffAutomation:Ua:AC" Access="0x11B" />
+      <DefaultAccess Namespace="urn:BeckhoffAutomation:Ua:PLC1" Access="0x3FF" />
+    </Group>
+    <Group Name="Administrators" MemberOf="Users" Access="0x0">
+      <DefaultAccess Namespace="*" Access="0x3FF" />
+    </Group>
+  </Groups>
+  <Users>
+    <User Name="Administrator" Auth="OS" IsRoot="true" MemberOf="Administrators" />
+  </Users>
+  <AccessInfos />
+</TcUaSecurityConfig>

@@ -31,7 +31,7 @@ END_VAR
       <ST><![CDATA[ipImageRes := main.ipImageIn   ;
 
 
- hr := F_VN_ReadBarcodeExp(main.ipImageIn, ipCodeDecodedList, ipCodeContourList,eBarcodeType, 1,eBarcodeSearchDirection , main.hr);
+ hr := F_VN_ReadBarcodeExp(main.ipImageIn, ipCodeDecodedList, ipCodeContourList,eBarcodeType, 1,eBarcodeSearchDirection , hr);
 	
 IF hr = S_OK THEN	
 	    // Export Code into String
@@ -52,16 +52,8 @@ END_IF
 	hr :=  F_VN_CopyIntoDisplayableImage(ipImageRes, display_barcode,hr);]]></ST>
     </Implementation>
     <LineIds Name="Barcode">
-      <LineId Id="32" Count="0" />
-      <LineId Id="82" Count="1" />
-      <LineId Id="81" Count="0" />
-      <LineId Id="75" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="41" Count="6" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="77" Count="3" />
-      <LineId Id="76" Count="0" />
-      <LineId Id="48" Count="2" />
+      <LineId Id="110" Count="20" />
+      <LineId Id="50" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

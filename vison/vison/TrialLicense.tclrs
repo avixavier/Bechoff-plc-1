@@ -2,18 +2,18 @@
 <TcLicenseInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2011/11/TcLicenseInfo">
 	<LicenseInfo>
 		<SystemId>{4D3872B7-3DC9-25FB-169F-BDB0C168E345}</SystemId>
-		<IssueTime>2023-10-09T02:20:00</IssueTime>
-		<ExpireTime>2023-10-17T00:00:00</ExpireTime>
-		<LicenseKey>07ecc01690ac34649f8b2a4bb00bc3ebc11ea952236ff5caeae729a47bd39a90f93d0f08bcd7d6702a896864b0d042b70ef3ace7d37dc004a49f5df983af62ff38ac6749f1de075777e862e968d53e5e3711cfed0c2333cbec28cae7c8b342196f306a131d88bb43c3b60095b3688d6412ca8f2d2e2e674fd5072506fb6d9ccb0d4319032d4c1186b5e8c753c29ba3efae298aa7c0758ed033d7fc7e78e80c9fa8437d198a4172fb6d202742defb485a55ba9e9f8dac1f5199896a10d820d12d7de1ed3afa0822b79cafbe7105c12dfdc7e1251a02e856888080e594b7e9e66a0ca463ae8594cf1086e9b0543ffe58c443dae1db740556d68b508bcd0d4f63ef</LicenseKey>
-		<License>
-			<LicenseId>{5762C59F-F838-4092-B24F-4E469453D3E9}</LicenseId>
-			<Name>TC3 Vision Code Reading</Name>
-			<OrderNo>TF7250</OrderNo>
-		</License>
+		<IssueTime>2023-10-16T01:56:00</IssueTime>
+		<ExpireTime>2023-10-24T00:00:00</ExpireTime>
+		<LicenseKey>5db3ed5dacd56d6c1a10b24fd1fc2816171697d8e2a17bb79a5a9cf8fd47983e8801cb438b3c983c258111a863f6df98a9fce1824e9b1a9e962482951c052fa0d753a08cd240cb2111772681811ca7084ad74c6d77b968529b79126dea68313a86ce6192c4ca33d54836edd3d831f2ca6f774b276553cebb417ebef8a71bf0e20468056e37a15bdf4d72b3ea39a44ccad8406b7ccbf540df2f60c420c2faaa1e37772b405b4df84e7249b5dc5e9c287fd84fd663ff4f429e48dccb8d905e1b88c3ed63e12dec601208fcc3e9a8075ca9107a8bfa6dbb771a39f06b692c5c70f44a3ecffe1b5e74c1c820a491be22b4bd72d3c6ef1eb105e3c245ec8913b04375</LicenseKey>
 		<License>
 			<LicenseId>{2C358067-6E81-4F6A-B8D9-AC1F63FEB6FD}</LicenseId>
 			<Name>TC3 Vision Base</Name>
 			<OrderNo>TF7100</OrderNo>
+		</License>
+		<License>
+			<LicenseId>{5762C59F-F838-4092-B24F-4E469453D3E9}</LicenseId>
+			<Name>TC3 Vision Code Reading</Name>
+			<OrderNo>TF7250</OrderNo>
 		</License>
 		<License>
 			<LicenseId>{4C256767-E6E6-4AF5-BD68-9F7ABAD0C200}</LicenseId>

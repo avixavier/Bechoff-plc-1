@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{370f09e1-aab9-4631-a45b-98d4087e384f}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[M_SING();
+M_MOTOR();]]></ST>
+    </Implementation>
+    <Method Name="M_MOTOR" Id="{59edf82d-8b44-427b-bf27-2b34876429cb}">
+      <Declaration><![CDATA[METHOD M_MOTOR : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[gvl.bmotorcontrol := ((gvl.bmotorstartpb or gvl.bmotorcontrol) and (not gvl.bmotorstoppb) ) and gvl.bmotorcontrolenable;
+
+//	GVL.bmotorstartpb := false;
+//	gvl.bmotorstoppb := false;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="M_SING" Id="{980af3c3-0c25-4c01-b933-580ca6d36e12}">
+      <Declaration><![CDATA[METHOD M_SING : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+
+GVL.RX 		:= 0.02 + GVL.rX;
+
+IF GVL.rY > (3.14 * 2.0) THEN
+	
+	GVL.RX := 0;
+	
+END_IF
+GVL.rY  	:= SIN(GVL.RX);]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="MAIN">
+      <LineId Id="2" Count="0" />
+      <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.M_MOTOR">
+      <LineId Id="5" Count="1" />
+      <LineId Id="8" Count="1" />
+    </LineIds>
+    <LineIds Name="MAIN.M_SING">
+      <LineId Id="6" Count="2" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

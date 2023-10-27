@@ -14,8 +14,8 @@ VAR
 	MC_JOG_aLargeDrive			: MC_Jog;
 	
 	Read_Actual_position		: MC_ReadActualPosition;
-	ActualPositionArrayLargeDrive 		: ARRAY [1..10] OF REAL;
-	ActualPositionArraysmallDrive 		: ARRAY [1..10] OF REAL;
+	ActualPositionArrayLargeDrive 		: ARRAY [1..100000] OF REAL;
+	ActualPositionArraysmallDrive 		: ARRAY [1..100000] OF REAL;
 	Reset_largeDrive			: MC_Reset;
 	Reset_smallDrive			: MC_Reset;
 	
@@ -23,6 +23,33 @@ VAR
 	PositionlargeDrive					: REAL;	  //positoin variable initialisation
 	PositionSmallDrive			:REAL;
     TIMER						: TON;    //FB link of TON
+	
+	{attribute 'OPC.UA.DA' := '1'}
+	testVar						: BOOL;
+	
+	{attribute 'OPC.UA.DA' := '1'}
+	testVar1					: BOOL;
+	
+	{attribute 'OPC.UA.DA' := '1'}
+	testVar2					: BOOL;
+	
+	
+	
+	
+	//variables set for motor config 
+	largevelocity				: REAL;
+	smallvelocity				: REAL;
+	largedeacceleration			: REAL;
+	largeacceleration			: REAL;
+	smallacceleration			: REAL;
+	smalldeacceleration			: REAL;
+	
+	//variables set for complete control 
+	motor1fwdscada 				:BOOL;
+	motor1revscada 				:BOOL;
+	
+	
+	
 	
 	
 	
@@ -58,15 +85,27 @@ ELSE
 END_IF
 
 
-//Selector conditonal statement
-IF cabinet.selector1 THEN
+////Selector conditonal statement
+//IF cabinet.selector1 THEN
 	
-	driveController.smallDrive.xForward := cabinet.motor1fwd;
-	driveController.smallDrive.xReverse := cabinet.motor1rev;
-ELSE
-	driveController.largeDrive.xForward := cabinet.motor2fwd;
-	driveController.largeDrive.xReverse := cabinet.motor2rev;	
-END_IF
+//	driveController.smallDrive.xForward := cabinet.motor1fwd;
+//	driveController.smallDrive.xReverse := cabinet.motor1rev;
+//ELSE
+//	driveController.largeDrive.xForward := cabinet.motor2fwd;
+//	driveController.largeDrive.xReverse := cabinet.motor2rev;	
+//END_IF
+
+
+WHILE cabinet.selector1 DO
+	
+	IF motor1fwdscada THEN
+		driveController.smallDrive.xForward := TRUE;
+	ELSIF motor1revscada THEN
+		driveController.smallDrive.xReverse := TRUE;
+		
+	END_IF  
+	
+END_WHILE
 
 //FB to read the positon of the large servo motor
 Read_Actual_position(
@@ -78,7 +117,16 @@ Read_Actual_position(
 	ErrorID=> , 
 	Position							 => driveController.largeDrive.actualposition);
 	
-	
+
+//FB to read the positon of the small servo motor
+Read_Actual_position(
+	Axis								:= asmallDrive, 
+	Enable								:= TRUE , 
+	Valid=> , 
+	Busy=> , 
+	Error=> , 
+	ErrorID=> , 
+	Position							 => driveController.smallDrive.actualposition);
 	
 //Fb to reset the large servo motor
 Reset_largeDrive(
@@ -97,6 +145,42 @@ Reset_smallDrive(
 	Busy=> , 
 	Error=> , 
 	ErrorID=> );
+//seting up the defualt motor speed if velicty, acceleration and deacceleration is set to zero by user 
+
+	IF driveController.largevelocity < 100 THEN
+		largevelocity := 100.00;
+	ELSE
+		largevelocity := driveController.largevelocity;
+	END_IF
+	IF driveController.largeacceleration < 100 THEN
+		largeacceleration:= 100.00;
+	ELSE
+		largeacceleration := driveController.largedeacceleration;
+	END_IF
+	IF driveController.largedeacceleration < 100 THEN
+		largedeacceleration := 100.00;
+	ELSE
+		largedeacceleration := driveController.largedeacceleration;
+	END_IF
+
+	IF driveController.smallvelocity < 100 THEN
+		smallvelocity := 100.00;
+	ELSE
+		smallvelocity := driveController.smallvelocity;
+	END_IF
+	IF driveController.smallacceleration < 100 THEN
+		smallacceleration := 100.00;
+	ELSE
+		smallacceleration := driveController.smalldeacceleration;
+	END_IF
+	IF driveController.smalldeacceleration < 100 THEN
+		smalldeacceleration := 100.00;
+	ELSE
+		smalldeacceleration := driveController.smalldeacceleration;
+	END_IF
+ 
+	
+	////////////////////////////////////////////////
 
 
 //small motor power and jog
@@ -119,10 +203,10 @@ MC_JOG_aSmallDrive(
 		JogForward						:= driveController.smallDrive.xForward, 
 		JogBackwards					:= driveController.smallDrive.xReverse, 
 		Mode							:= E_JogMode.MC_JOGMODE_CONTINOUS,
-		//Position:= , 
-		Velocity						:= 500, 
-		Acceleration					:= 15000, 
-		Deceleration					:= 15000, 
+		Position						:= ,
+		Velocity						:= smallvelocity, 
+		Acceleration					:= smallacceleration, 
+		Deceleration					:= smalldeacceleration, 
 		Jerk							:= 15000, 
 		Done							=> , 
 		Busy							=> , 
@@ -148,15 +232,19 @@ MC_Power_aLargeDrive(
 		Error							=> , 
 		ErrorID							=> );
 		
+		
+		
+	
+
 	MC_JOG_aLargeDrive(
 		Axis							:= alargeDrive, 
 		JogForward						:= driveController.largeDrive.xForward, 
 		JogBackwards					:= driveController.largeDrive.xReverse, 
 		Mode							:= E_JogMode.MC_JOGMODE_CONTINOUS,
-		//Position:= , 
-		Velocity						:= 100, 
-		Acceleration					:= 1000, 
-		Deceleration					:= 1000, 
+		Position						:= ,
+		Velocity						:= largevelocity, 
+		Acceleration					:= largeacceleration,		
+		Deceleration					:= largedeacceleration,
 		Jerk							:= 1000, 
 		Done							=> , 
 		Busy							=> , 
@@ -166,7 +254,7 @@ MC_Power_aLargeDrive(
 		ErrorID							=> );
 
 		
-//Timed storing of actual posiotn of Large servo motor
+//Timed storing of actual posiotn of  servo motor
 
 TIMER(IN:= , PT:= T#1S , Q=> , ET=>  );		
 IF driveController.largeDrive.xForward OR driveController.largeDrive.xReverse OR driveController.smallDrive.xForward OR driveController.smallDrive.xReverse THEN
@@ -211,17 +299,28 @@ END_IF
       <LineId Id="375" Count="0" />
       <LineId Id="209" Count="4" />
       <LineId Id="204" Count="0" />
+      <LineId Id="737" Count="0" />
+      <LineId Id="739" Count="0" />
+      <LineId Id="738" Count="0" />
+      <LineId Id="742" Count="0" />
+      <LineId Id="744" Count="2" />
+      <LineId Id="749" Count="0" />
+      <LineId Id="748" Count="0" />
+      <LineId Id="743" Count="0" />
+      <LineId Id="740" Count="1" />
       <LineId Id="359" Count="0" />
       <LineId Id="323" Count="0" />
       <LineId Id="334" Count="6" />
       <LineId Id="324" Count="0" />
       <LineId Id="376" Count="0" />
+      <LineId Id="555" Count="8" />
       <LineId Id="365" Count="1" />
       <LineId Id="221" Count="0" />
       <LineId Id="368" Count="5" />
       <LineId Id="361" Count="2" />
       <LineId Id="389" Count="5" />
       <LineId Id="381" Count="0" />
+      <LineId Id="643" Count="35" />
       <LineId Id="364" Count="0" />
       <LineId Id="360" Count="0" />
       <LineId Id="220" Count="0" />
@@ -234,6 +333,8 @@ END_IF
       <LineId Id="69" Count="11" />
       <LineId Id="55" Count="0" />
       <LineId Id="81" Count="0" />
+      <LineId Id="564" Count="2" />
+      <LineId Id="569" Count="0" />
       <LineId Id="84" Count="0" />
       <LineId Id="99" Count="13" />
       <LineId Id="82" Count="0" />

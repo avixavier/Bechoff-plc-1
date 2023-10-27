@@ -1130,6 +1130,7 @@
 		<System>
 			<Settings MaxCpus="16" NonWinCpus="1">
 				<Cpu CpuId="15"/>
+				<IoIdleTask CycleTime="1000000"/>
 			</Settings>
 			<Tasks>
 				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
@@ -1142,7 +1143,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{9313FA0D-078A-47CD-8CC3-8E30FA80C8CA}" Name="VisionPLC" PrjFilePath="VisionPLC\VisionPLC.plcproj" TmcFilePath="VisionPLC\VisionPLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="VisionPLC\VisionPLC.tmc" TmcHash="{5BEE1382-EF9E-470C-248C-3CB2458C83A0}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="VisionPLC\VisionPLC.tmc" TmcHash="{1FF4EA4D-9A7C-293E-F820-735752A57568}">
 					<Name>VisionPLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -1347,7 +1348,7 @@
 								</Value>
 								<Value>
 									<Name>CycleTime</Name>
-									<Value>10000</Value>
+									<Value>100</Value>
 								</Value>
 								<Value>
 									<Name>TriggerMode</Name>

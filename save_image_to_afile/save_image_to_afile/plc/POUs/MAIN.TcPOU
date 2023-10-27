@@ -24,6 +24,28 @@ VAR
 	d: STRING;
 	spath1: STRING(255);
 	spath2: STRING(255);
+	
+
+
+
+// Barcode
+ipCodeDecodedList         :   ITcVnContainer; 
+ipCodeContourList         :   ITcVnContainer;
+sCodeAsString             :   STRING(255);
+eBarcodeSearchDirection   :   ETcVnBarcodeSearchDirection := TCVN_BSD_ANY;
+eBarcodeType              :   ETcVnBarcodeType := TCVN_BT_EAN13;
+ipImageRes: ITcVnImage;	
+
+// Watchdog
+hrWD                      :   HRESULT;
+tStop                     :   DINT := 50000;
+tRest                     :   DINT;
+
+// Output
+sText                     :   STRING;
+
+// Color
+aColorgreen                 :   TcVnVector4_LREAL := [0, 255, 0];
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -41,7 +63,7 @@ TCVN_CS_ACQUIRING:
 	IF SUCCEEDED(hr) AND ipImageIn <> 0 THEN
 
 		IF NOT fbWriteImage.bBusy AND bWriteImageTrigger THEN
-			bWriteImageTrigger := TRUE;
+			bWriteImageTrigger := FALSE;
 			bWriteImageDone := FALSE;
 			bWriteImageWaitResult := TRUE;
 			i:= i+1;
@@ -74,6 +96,7 @@ TCVN_CS_ACQUIRING:
 			nReturnCode := 0;
 		END_IF
 	END_IF	
+
 	
 TCVN_CS_ERROR:
 	fbCamera.Reset();
@@ -82,14 +105,18 @@ END_CASE
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="25" Count="16" />
-      <LineId Id="74" Count="0" />
-      <LineId Id="78" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="80" Count="0" />
-      <LineId Id="83" Count="0" />
-      <LineId Id="76" Count="0" />
-      <LineId Id="43" Count="28" />
+      <LineId Id="25" Count="10" />
+      <LineId Id="221" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="186" Count="4" />
+      <LineId Id="240" Count="0" />
+      <LineId Id="192" Count="0" />
+      <LineId Id="241" Count="1" />
+      <LineId Id="239" Count="0" />
+      <LineId Id="196" Count="22" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="243" Count="0" />
+      <LineId Id="68" Count="3" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

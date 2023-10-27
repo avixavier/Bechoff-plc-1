@@ -4,9 +4,16 @@
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL
 	
-	smallDrive		: st_driveControl;
-    largeDrive      : st_driveControl;
+	smallDrive			: st_driveControl;
+    largeDrive      	: st_driveControl;
 	
+	largeacceleration 	: REAL;
+	largevelocity		: REAL;
+	largedeacceleration	: REAL;
+	
+	smallacceleration 	: REAL;
+	smallvelocity		: REAL;
+	smalldeacceleration	: REAL;
 	
 END_VAR]]></Declaration>
   </GVL>

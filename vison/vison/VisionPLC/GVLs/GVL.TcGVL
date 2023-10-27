@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="GVL" Id="{17b1a540-70a3-459a-8f02-c498f85207af}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+	MAX_CSV_ROWS 			: UDINT := 10;
+	MAX_CSV_COLUMNS 		: UDINT := 5;
+	MAX_CSV_FIELD_LENGTH	: UDINT := 100;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

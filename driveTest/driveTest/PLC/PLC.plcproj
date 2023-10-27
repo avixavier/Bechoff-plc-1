@@ -38,6 +38,9 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\button.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\drives.TcPOU">
       <SubType>Code</SubType>
     </Compile>
